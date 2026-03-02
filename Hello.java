@@ -1,21 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 
 public class Hello {
 
     private JTextArea textArea = new JTextArea(15, 50);
     private File lastLoadedFile;
     Manager<Mybook> books = new Manager<>("resources/book.txt");
-    Manager<Mycd> cds = new Manager<>("resources/cd.txt");
- 
-
-    ArrayList<Mycd> cd_list = cds.getResources();
-    
-
-
-
+        Manager<Mycd> cds = new Manager<>("resources/cd.txt");
+        Manager<Myloan> loans = new Manager<>("resources/cd.txt");
 
     public Hello() {
 
@@ -29,7 +22,7 @@ public class Hello {
         frame.add(top, BorderLayout.NORTH);
 
         // Text area in center
-        textArea.setText("hello");
+        textArea.setText("");
         JScrollPane scroll = new JScrollPane(textArea);
         frame.add(scroll, BorderLayout.CENTER);
 
