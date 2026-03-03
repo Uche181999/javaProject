@@ -14,15 +14,25 @@ public class Hello {
 
         JFrame frame = new JFrame("Hello World App");
         frame.setLayout(new BorderLayout());
-
+ 
         // Top panel with Load button
         JButton loadButton = new JButton("Load File");
+        JRadioButton bookButton = new JRadioButton("books");
+        JRadioButton cdButton = new JRadioButton("CDs");
+        JRadioButton loanButton = new JRadioButton("loans");
         JPanel top = new JPanel();
         top.add(loadButton);
-        frame.add(top, BorderLayout.NORTH);
+        top.add(bookButton);
+        top.add(cdButton);
+        top.add(loanButton);
+        frame.add(top,BorderLayout.NORTH);
 
+        ButtonGroup group = new ButtonGroup();
+        group.add(bookButton);
+        group.add(cdButton);
+        group.add(loanButton);
         // Text area in center
-        textArea.setText("");
+        textArea.setText(Helper.displayText(books));
         JScrollPane scroll = new JScrollPane(textArea);
         frame.add(scroll, BorderLayout.CENTER);
 

@@ -1,0 +1,32 @@
+public class Mydvd {
+
+    public String oclcNumber;
+    public String title;
+    public String cast;
+    public String credits;
+    public String plot;
+    public String language;
+    public String year;
+    public String plot;
+    public String publisher;
+    public String genre;
+    public String physicalDescription;
+    public String isbn;
+
+    @Override
+    public String toString() {
+
+        return "OCLC Number: " + oclcNumber +
+                "\nTitle: " + title +
+                "\nPerformers: " + performers +
+                "\nCredits: " + credits +
+                "\nCast: " + cast+
+                "\nPlot: " + plot+
+                "\nYear: " + year +
+                "\nLanguage: " + language +
+                "\nPublisher: " + publisher +
+                "\nGenre: " + genre +
+                "\nPhysical Description: " + physicalDescription +
+                "\nISBN: " + isbn;
+    }
+}
