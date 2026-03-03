@@ -1,21 +1,24 @@
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Helper {
 
-    public static <T> String displayText(Manager<T> object) {
 
-        ArrayList<T>  list = object.getResources();
-        StringBuilder sb = new StringBuilder();
 
-        for (T field : list) {
-            sb.append(field.toString());
-        
-        }
+public static <T> String displayText(Manager<T> object) {
 
-        return sb.toString();
+    HashMap<String, T> map = object.getResources();
+    StringBuilder sb = new StringBuilder();
+
+    // iterate over the values of the map
+    for (T field : map.values()) {
+        sb.append(field.toString()).append("\n\n");
     }
+
+    return sb.toString();
+}
+
 
     public static String readNextValue(BufferedReader br) throws IOException {
 

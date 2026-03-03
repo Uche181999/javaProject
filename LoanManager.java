@@ -1,13 +1,13 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 
 
 public class LoanManager {
 
-        private ArrayList<Myloan> resources = new ArrayList<>();
+        private HashMap<String,Myloan>resources = new HashMap<>();
 
-        public ArrayList<Myloan> getResources() {
+        public HashMap<String,Myloan> getResources() {
             return resources;
         }
 
@@ -31,7 +31,7 @@ public class LoanManager {
                         || line.startsWith("-------------------------------------------------------------------")) {
 
                     if (current != null) {
-                        resources.add(current);
+                        resources.put(current.oclcNumber,current);
                         current = null;
                     }
                     continue;
@@ -54,7 +54,7 @@ public class LoanManager {
             }
 
             if (current != null)
-                resources.add(current);
+                resources.put(current.oclcNumber,current);
 
         } catch (Exception e) {
             e.printStackTrace();

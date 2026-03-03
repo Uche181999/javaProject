@@ -7,9 +7,11 @@ public class Hello {
     private JTextArea textArea = new JTextArea(15, 50);
     private File lastLoadedFile;
     Manager<Mybook> books = new Manager<>("resources/book.txt");
-        Manager<Mycd> cds = new Manager<>("resources/cd.txt");
-        Manager<Myloan> loans = new Manager<>("resources/cd.txt");
+    Manager<Mycd> cds = new Manager<>("resources/cd.txt");
+    Manager<Myloan> loans = new Manager<>("resources/loan.txt");
+    Manager<Mydvd> dvds = new Manager<>("resources/dvd.txt");
 
+    
     public Hello() {
 
         JFrame frame = new JFrame("Hello World App");
@@ -32,7 +34,8 @@ public class Hello {
         group.add(cdButton);
         group.add(loanButton);
         // Text area in center
-        textArea.setText(Helper.displayText(books));
+        textArea.setText("RESULT ARE DISPLAYED HERE ....");
+        textArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(textArea);
         frame.add(scroll, BorderLayout.CENTER);
 
@@ -42,6 +45,8 @@ public class Hello {
         bottom.add(saveButton);
         frame.add(bottom, BorderLayout.SOUTH);
 
+        JPanel left = new JPanel();
+        frame.add(left, BorderLayout.WEST);
         // Load button action
         loadButton.addActionListener(e -> loadFile(frame));
 

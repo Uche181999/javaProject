@@ -1,11 +1,11 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CDManager {
 
-    private ArrayList<Mycd> resources = new ArrayList<>();
+    private HashMap<String,Mycd> resources = new HashMap<>();
 
-    public ArrayList<Mycd> getResources() {
+    public HashMap<String,Mycd> getResources() {
         return resources;
     }
 
@@ -27,7 +27,7 @@ public class CDManager {
                         || line.startsWith("-------------------------------------------------------------------")) {
 
                     if (current != null) {
-                        resources.add(current);
+                        resources.put(current.oclcNumber,current);
                         current = null;
                         descriptionBuilder = null;
                     }
@@ -115,7 +115,7 @@ public class CDManager {
 
             // Add last CD if file doesn't end with separator
             if (current != null) {
-                resources.add(current);
+                resources.put(current.oclcNumber,current);
             }
 
         } catch (Exception e) {

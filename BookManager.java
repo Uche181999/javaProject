@@ -1,13 +1,13 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 
 
 public class BookManager {
 
-        private ArrayList<Mybook> resources = new ArrayList<>();
+        private HashMap<String,Mybook> resources = new HashMap<>();
 
-        public ArrayList<Mybook> getResources() {
+        public HashMap<String,Mybook> getResources() {
             return resources;
         }
 
@@ -31,7 +31,7 @@ public class BookManager {
                         || line.startsWith("-------------------------------------------------------------------")) {
 
                     if (current != null) {
-                        resources.add(current);
+                        resources.put(current.oclcNumber, current);
                         current = null;
                     }
                     continue;
@@ -132,7 +132,7 @@ public class BookManager {
             }
 
             if (current != null)
-                resources.add(current);
+                resources.put(current.oclcNumber, current);
 
         } catch (Exception e) {
             e.printStackTrace();

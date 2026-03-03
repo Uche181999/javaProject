@@ -1,11 +1,11 @@
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DVDManager {
 
-    private ArrayList<Mydvd> resources = new ArrayList<>();
+    private HashMap<String,Mydvd> resources = new HashMap<>();
 
-    public ArrayList<Mydvd> getResources() {
+    public HashMap<String,Mydvd> getResources() {
         return resources;
     }
 
@@ -26,7 +26,7 @@ public class DVDManager {
                         || line.startsWith("-------------------------------------------------------------------")) {
 
                     if (current != null) {
-                        resources.add(current);
+                        resources.put(current.oclcNumber,current);
                         current = null;
                     }
                     continue;
@@ -74,7 +74,7 @@ public class DVDManager {
             }
             // Add last CD if file doesn't end with separator
             if (current != null) {
-                resources.add(current);
+                resources.put(current.oclcNumber,current);
             }
 
         } catch (Exception e) {
