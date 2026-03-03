@@ -21,6 +21,12 @@ public class Manager<T> {
             LoanManager.loadLoans(filePath);
             resources = (ArrayList<T>) LoanManager.getResources(); // safe if T=Mybook
         }
+
+            else if (lower.contains("dvd")) {
+        DVDManager DVDManager = new DVDManager();
+        DVDManager.loadDVDs(filePath);
+        resources = (ArrayList<T>) DVDManager.getResources(); // safe if T=Mybook
+    }
         // handle CDs, Loans similarly
     }
 

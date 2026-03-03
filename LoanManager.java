@@ -47,86 +47,8 @@ public class LoanManager {
                     continue;
                 }
 
-                if (line.startsWith("Title:")) {
-                    current.title = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("Authors:")
-                        || line.startsWith("Author:")) {
-                    current.authors = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("Year of publication:")) {
-                    current.year = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("Publisher:")) {
-                    current.publisher = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("Genre:")) {
-                    current.genre = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("Physical Description:")) {
-                    current.physicalDescription = Helper.readNextValue(br);
-                    continue;
-                }
-
-                if (line.startsWith("ISBN:")) {
-                    current.isbn = Helper.readNextValue(br);
-                    continue;
-                }
-
-                // ========= SUMMARY (SPECIAL CASE) =========
-
-                if (line.startsWith("Summary:")) {
-
-                    StringBuilder summaryBuilder = new StringBuilder();
-
-                    while ((line = br.readLine()) != null) {
-
-                        line = line.trim();
-
-                        if (line.startsWith("Year of publication:")
-                                || line.startsWith("Publisher:")
-                                || line.startsWith("Genre:")
-                                || line.startsWith("Physical Description:")
-                                || line.startsWith("ISBN:")
-                                || line.startsWith("--- END OF ENTRY ---")
-                                || line.startsWith("-------------------------------------------------------------------")) {
-                            break;
-                        }
-
-                        if (!line.isEmpty())
-                            summaryBuilder.append(line).append("\n");
-                    }
-
-                    current.summary = summaryBuilder.toString().trim();
-
-                    // IMPORTANT:
-                    // We already read the next field line,
-                    // so process it in next loop iteration.
-                    if (line != null) {
-                        // push it back logically by handling it again
-                        // easiest way: manually process it
-                        if (line.startsWith("Year of publication:"))
-                            current.year = Helper.readNextValue(br);
-                        else if (line.startsWith("Publisher:"))
-                            current.publisher = Helper.readNextValue(br);
-                        else if (line.startsWith("Genre:"))
-                            current.genre = Helper.readNextValue(br);
-                        else if (line.startsWith("Physical Description:"))
-                            current.physicalDescription = Helper.readNextValue(br);
-                        else if (line.startsWith("ISBN:"))
-                            current.isbn = Helper.readNextValue(br);
-                    }
-
+                if (line.startsWith("ON LOAN:")) {
+                    current.loan = Helper.readNextValue(br);
                     continue;
                 }
             }
