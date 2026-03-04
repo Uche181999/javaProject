@@ -1,12 +1,5 @@
 import javax.swing.*;
 
-import Manager.Manager;
-import Model.Mybook;
-import Model.Mycd;
-import Model.Mydvd;
-import Model.Myloan;
-import Util.Helper;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,19 +11,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class LibraryAnalysisDashboard {
+public class MainClass {
 
     private File lastLoadedFile;
-    private Manager<Mybook> books = new Manager<>("resources/book.txt");
-    private Manager<Mycd> cds = new Manager<>("resources/cd.txt");
-    private Manager<Myloan> loans = new Manager<>("resources/loan.txt");
-    private Manager<Mydvd> dvds = new Manager<>("resources/dvd.txt");
+    private Manager<Book> books = new Manager<>("resources/book.txt");
+    private Manager<Cd> cds = new Manager<>("resources/cd.txt");
+    private Manager<Loan> loans = new Manager<>("resources/loan.txt");
+    private Manager<Dvd> dvds = new Manager<>("resources/dvd.txt");
 
     private JTextArea outputArea = new JTextArea("RESULTS ARE DISPLAYED HERE ...");
     private JTextField oclcField = new JTextField();
     private JTextField genreField = new JTextField();
 
-    public LibraryAnalysisDashboard() {
+    public MainClass() {
 
         // Create Frame
         JFrame frame = new JFrame("Library Analytics Dashboard");
@@ -80,9 +73,9 @@ public class LibraryAnalysisDashboard {
 
         JButton showGenresButton = new JButton("Show Genres");
 
-        JButton topBooksButton = new JButton("Top 10 Loaned Books");
-        JButton topDvdsButton = new JButton("Top 10 Loaned DVDs");
-        JButton topCdsButton = new JButton("Top 10 Loaned CDs");
+        JButton topBooksButton = new JButton("Loaned Books");
+        JButton topDvdsButton = new JButton("Loaned DVDs");
+        JButton topCdsButton = new JButton("Loaned CDs");
 
         westPanel.add(new JLabel(""));
         westPanel.add(reportButton);
@@ -283,13 +276,13 @@ public class LibraryAnalysisDashboard {
 
         String allGenres = "LIST OF GENRES \n-----------------------------------------------------\n\n";
 
-        for(Mybook b : books.getResources().values()){
+        for(Book b : books.getResources().values()){
             bookGenres.add(b.genre);
         }
-        for(Mycd c : cds.getResources().values()){
+        for(Cd c : cds.getResources().values()){
             cdGenres.add(c.genre);
         }
-        for(Mydvd d : dvds.getResources().values()){
+        for(Dvd d : dvds.getResources().values()){
             dvdGenres.add(d.genre);
         }
         genres.addAll(bookGenres);
@@ -302,45 +295,98 @@ public class LibraryAnalysisDashboard {
 
         outputArea.setText(allGenres);
     }
-    // ================= DISPLAY TOP LOANED FOR BOOKS, CDS AND DVDS =================
-private <T> void getTop10Loaned(
-        Manager<T> items,
-        Manager<Myloan> loans,
-        String typeName) {
+        // ================= DISPLAY TOP LOANED FOR BOOKS, CDS AND DVDS =================
+    private <T> void getTop10Loaned(
+            Manager<T> items,
+            Manager<Loan> loans,
+            String typeName) {
 
-    HashMap<String, Integer> countMap = new HashMap<>();
+        // Map for total days
+        HashMap<String, Integer> totalDaysMap = new HashMap<>();
 
-    for (Myloan l : loans.getResources().values()) {
-        String id = l.oclcNumber;
-        if (items.getResources().containsKey(id)) {
-            countMap.put(id, countMap.getOrDefault(id, 0) + 1);
+        // Map for number of times loan occurred
+        HashMap<String, Integer> loanCountMap = new HashMap<>();
+
+        String from = "";
+
+        for (Loan l : loans.getResources().values()) {
+
+            String id = l.oclcNumber;
+
+            if (items.getResources().containsKey(id)) {
+
+                // Convert string to int (if loan is String)
+                int days = 0;
+                try {
+                    days = Integer.parseInt(l.loan.trim());
+                } catch (Exception e) {
+                    days = 0;
+                }
+
+                // Add total days
+                totalDaysMap.put(id,
+                        totalDaysMap.getOrDefault(id, 0) + days);
+
+                // Count occurrences
+                loanCountMap.put(id,
+                        loanCountMap.getOrDefault(id, 0) + 1);
+            }
         }
+
+        ArrayList<Map.Entry<String, Integer>> list =
+                new ArrayList<>(totalDaysMap.entrySet());
+
+        // Sort by total days descending
+        list.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("TOP 10 LOANED ").append(typeName).append("\n---------------------------------------\n");
+
+        if (list.isEmpty()) {
+            outputArea.setText("No items found for loaned " + typeName);
+            return;
+        }
+
+        int limit = Math.min(10, list.size());
+
+        for (int i = 0; i < limit; i++) {
+
+            String id = list.get(i).getKey();
+            int totalDays = list.get(i).getValue();
+
+            // Convert days → months (round up)
+            // int months = (int) Math.ceil(totalDays / 30.0);
+            int months =totalDays;
+            int timesLoaned = loanCountMap.get(id);
+
+            T item = items.getResources().get(id);
+
+            String title = "";
+
+            if (item instanceof Book){
+                title = ((Book) item).title;
+                from ="BOOK";
+            }
+
+            else if (item instanceof Cd){
+                title = ((Cd) item).title;
+                from ="CD";
+            }
+
+            else if (item instanceof Dvd){
+                title = ((Dvd) item).title;
+                from ="DVD";
+            }
+            sb.append("FORM : " + from )
+            .append("\n\nOCLC NUMBER: ").append(id)
+            .append("\n\nTITLE: ").append(title)
+            .append("\n\nNO. TIMES LOANED: ").append(timesLoaned)
+            .append("\n\nTOTAL MONTHS LOANED: ").append(months)
+            .append("\n---------------------------------------\n");
+        }
+
+        outputArea.setText(sb.toString());
     }
-
-    ArrayList<Map.Entry<String, Integer>> list = new ArrayList<>(countMap.entrySet());
-    list.sort((a, b) -> b.getValue().compareTo(a.getValue()));
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("TOP 10 LOANED ").append(typeName).append("\n\n");
-
-    int limit = Math.min(10, list.size());
-
-    for (int i = 0; i < limit; i++) {
-        String id = list.get(i).getKey();
-        int count = list.get(i).getValue();
-        T item = items.getResources().get(id);
-
-        sb.append("Loan count: ")
-          .append(count)
-          .append("\n")
-          .append(item.toString())
-          .append("\n\n");
-    }
-    if (sb.toString().equals("TOP 10 LOANED "+ typeName)){
-        outputArea.setText("No items found for loaned " + typeName);
-    }
-    outputArea.setText(sb.toString());
-}
     // ================= DISPLAY BY OCLC NUMBER SEARCH=================
     private void oclcSearch(){
         String oclcInput = oclcField.getText().trim();
@@ -353,20 +399,24 @@ private <T> void getTop10Loaned(
 
         // Search Books
         if (books.getResources().containsKey(oclcInput)) {
-            Mybook book = books.getResources().get(oclcInput);
-            result.append("BOOK:\n").append(book.toString()).append("\n\n");
+            Book book = books.getResources().get(oclcInput);
+            result.append("FROM : BOOK\n")
+                  .append("---------------------------------------\n").append(book.toString()).append("\n\n");
         }
 
         // Search CDs
         if (cds.getResources().containsKey(oclcInput)) {
-            Mycd cd = cds.getResources().get(oclcInput);
-            result.append("CD:\n").append(cd.toString()).append("\n\n");
+            Cd cd = cds.getResources().get(oclcInput);
+            result.append("FROM : CD\n")
+                  .append("---------------------------------------\n").append(cd.toString()).append("\n\n");
         }
+        
 
         // Search DVDs
         if (dvds.getResources().containsKey(oclcInput)) {
-            Mydvd dvd = dvds.getResources().get(oclcInput);
-            result.append("DVD:\n").append(dvd.toString()).append("\n\n");
+            Dvd dvd = dvds.getResources().get(oclcInput);
+            result.append("FROM : DVD\n")
+                  .append("---------------------------------------\n").append(dvd.toString()).append("\n\n");
         }
 
         // No match
@@ -391,23 +441,41 @@ private <T> void getTop10Loaned(
         StringBuilder result = new StringBuilder();
 
         // Search Books
-        for (Mybook b : books.getResources().values()) {
+        for (Book b : books.getResources().values()) {
             if (b.genre != null && b.genre.toLowerCase().contains(genreInput)) {
-                matchedItems.add("BOOK:\n\n" + b.toString());
+                matchedItems.add(
+                                "FROM : BOOK" + 
+                                "\n\nOCLC NUMBER :" + b.oclcNumber +
+                                "\n\nTITLE :" + b.title +
+                                "\n\nGENRE :" + b.genre +
+                                "\n---------------------------------------\n"
+                                 );
             }
         }
 
         // Search CDs
-        for (Mycd c : cds.getResources().values()) {
+        for (Cd c : cds.getResources().values()) {
             if (c.genre != null && c.genre.toLowerCase().contains(genreInput)) {
-                matchedItems.add("CD:\n\n" + c.toString());
+                matchedItems.add(
+                                "FROM : CD" + 
+                                "\n\nOCLC NUMBER :" + c.oclcNumber +
+                                "\n\nTITLE :" + c.title +
+                                "\n\nGENRE :" + c.genre +
+                                "\n---------------------------------------\n"
+                                 );
             }
         }
 
         // Search DVDs
-        for (Mydvd d : dvds.getResources().values()) {
+        for (Dvd d : dvds.getResources().values()) {
             if (d.genre != null && d.genre.toLowerCase().contains(genreInput)) {
-                matchedItems.add("DVD:\n\n" + d.toString());
+                matchedItems.add(
+                                "FROM : DVD" + 
+                                "\n\nOCLC NUMBER :" + d.oclcNumber +
+                                "\n\nTITLE :" + d.title +
+                                "\n\nGENRE :" + d.genre +
+                                "\n---------------------------------------\n"
+                                 );
             }
         }
 
@@ -415,6 +483,7 @@ private <T> void getTop10Loaned(
             result.append("No items found for genre: ").append(genreInput);
         } else {
             result.append("Items matching genre '").append(genreInput).append("':\n\n");
+            result.append("---------------------------------------\n");
             for (String item : matchedItems) {
                 result.append(item).append("\n");
             }
@@ -448,13 +517,13 @@ private <T> void getTop10Loaned(
         HashSet<String> dvdGenres = new HashSet<>();
         HashSet<String> cdGenres = new HashSet<>();
 
-        for (Mybook b : books.getResources().values())
+        for (Book b : books.getResources().values())
             if (b.genre != null) bookGenres.add(b.genre);
 
-        for (Mydvd d : dvds.getResources().values())
+        for (Dvd d : dvds.getResources().values())
             if (d.genre != null) dvdGenres.add(d.genre);
 
-        for (Mycd c : cds.getResources().values())
+        for (Cd c : cds.getResources().values())
             if (c.genre != null) cdGenres.add(c.genre);
 
         report.append("How many unique different genres are there in the book catalogue? ")
@@ -499,7 +568,7 @@ private <T> void getTop10Loaned(
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new LibraryAnalysisDashboard();
+            new MainClass();
         });
     }
 }

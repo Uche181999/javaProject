@@ -1,15 +1,12 @@
-package Manager;
+
 import java.io.*;
 import java.util.HashMap;
 
-import Model.Mydvd;
-import Util.Helper;
-
 public class DVDManager {
 
-    private HashMap<String,Mydvd> resources = new HashMap<>();
+    private HashMap<String,Dvd> resources = new HashMap<>();
 
-    public HashMap<String,Mydvd> getResources() {
+    public HashMap<String,Dvd> getResources() {
         return resources;
     }
 
@@ -18,7 +15,7 @@ public class DVDManager {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             String line;
-            Mydvd current = null;
+            Dvd current = null;
 
             while ((line = br.readLine()) != null) {
 
@@ -37,7 +34,7 @@ public class DVDManager {
                 }
 
                 if (current == null)
-                    current = new Mydvd();
+                    current = new Dvd();
 
                 // ===== SIMPLE FIELDS =====
 

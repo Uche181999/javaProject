@@ -1,4 +1,4 @@
-package Manager;
+
 import java.util.HashMap;
 
 public class Manager<T> {
@@ -11,23 +11,32 @@ public class Manager<T> {
         if (lower.contains("book")) {
             BookManager bookManager = new BookManager();
             bookManager.loadBooks(filePath);
+
             // now getResources returns HashMap<String, Mybook
-            resources = (HashMap<String, T>) bookManager.getResources(); 
+            @SuppressWarnings("unchecked")
+            HashMap<String, T> tmp = (HashMap<String, T>) bookManager.getResources(); 
+            resources =tmp;
         } 
         else if (lower.contains("cd")) {
             CDManager cdManager = new CDManager();
             cdManager.loadCDs(filePath);
-            resources = (HashMap<String, T>) cdManager.getResources();
+            @SuppressWarnings("unchecked")
+            HashMap<String, T> tmp = (HashMap<String, T>) cdManager.getResources(); 
+            resources =tmp;
         } 
         else if (lower.contains("loan")) {
             LoanManager loanManager = new LoanManager();
             loanManager.loadLoans(filePath);
-            resources = (HashMap<String, T>) loanManager.getResources();
+            @SuppressWarnings("unchecked")
+            HashMap<String, T> tmp = (HashMap<String, T>) loanManager.getResources(); 
+            resources =tmp;
         } 
         else if (lower.contains("dvd")) {
             DVDManager dvdManager = new DVDManager();
             dvdManager.loadDVDs(filePath);
-            resources = (HashMap<String, T>) dvdManager.getResources();
+            @SuppressWarnings("unchecked")
+            HashMap<String, T> tmp = (HashMap<String, T>) dvdManager.getResources(); 
+            resources =tmp;
         }
     }
 

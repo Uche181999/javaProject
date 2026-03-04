@@ -1,9 +1,8 @@
-package Util;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
-import Manager.Manager;
 
 
 public class Helper {
@@ -14,7 +13,7 @@ public static <T> String displayText(Manager<T> object) {
 
         HashMap<String, T> map = object.getResources();
         StringBuilder sb = new StringBuilder();
-
+        sb.append("---------------------------------------\n\n");
         // iterate over the values of the map
         for (T field : map.values()) {
             sb.append(field.toString()).append("\n\n");

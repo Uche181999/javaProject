@@ -1,17 +1,14 @@
-package Manager;
+
 import java.io.*;
 import java.util.HashMap;
-
-import Model.Myloan;
-import Util.Helper;
 
 
 
 public class LoanManager {
 
-        private HashMap<String,Myloan>resources = new HashMap<>();
+        private HashMap<String,Loan>resources = new HashMap<>();
 
-        public HashMap<String,Myloan> getResources() {
+        public HashMap<String,Loan> getResources() {
             return resources;
         }
 
@@ -21,7 +18,7 @@ public class LoanManager {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             String line;
-            Myloan current = null;
+            Loan current = null;
 
             while ((line = br.readLine()) != null) {
 
@@ -42,7 +39,7 @@ public class LoanManager {
                 }
 
                 if (current == null)
-                    current = new Myloan ();
+                    current = new Loan ();
 
                 // ========= SIMPLE FIELDS =========
 
