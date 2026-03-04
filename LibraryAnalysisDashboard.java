@@ -237,6 +237,13 @@ public class LibraryAnalysisDashboard {
 
             JOptionPane.showMessageDialog(null,
                     "File saved as resources/" + fileName);
+            // ==========================
+            // Reload Managers automatically
+            // ==========================
+            books = new Manager<>("resources/book.txt");
+            cds = new Manager<>("resources/cd.txt");
+            dvds = new Manager<>("resources/dvd.txt");
+            loans = new Manager<>("resources/loan.txt");
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null,
@@ -274,7 +281,7 @@ public class LibraryAnalysisDashboard {
         HashSet<String> dvdGenres = new HashSet<>();
         HashSet<String> genres = new HashSet<>();
 
-        String allGenres = "";
+        String allGenres = "LIST OF GENRES \n-----------------------------------------------------\n\n";
 
         for(Mybook b : books.getResources().values()){
             bookGenres.add(b.genre);
@@ -329,7 +336,9 @@ private <T> void getTop10Loaned(
           .append(item.toString())
           .append("\n\n");
     }
-
+    if (sb.toString().equals("TOP 10 LOANED "+ typeName)){
+        outputArea.setText("No items found for loaned " + typeName);
+    }
     outputArea.setText(sb.toString());
 }
     // ================= DISPLAY BY OCLC NUMBER SEARCH=================
