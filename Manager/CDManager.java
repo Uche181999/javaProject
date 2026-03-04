@@ -1,99 +1,89 @@
+package Manager;
 import java.io.*;
 import java.util.HashMap;
 
+import Model.Mycd;
+import Util.Helper;
 
+public class CDManager {
 
-public class BookManager {
+    private HashMap<String,Mycd> resources = new HashMap<>();
 
-        private HashMap<String,Mybook> resources = new HashMap<>();
+    public HashMap<String,Mycd> getResources() {
+        return resources;
+    }
 
-        public HashMap<String,Mybook> getResources() {
-            return resources;
-        }
-
-        // ================= BOOK PARSER =================
-        public void loadBooks(String filePath) {
+    public void loadCDs(String filePath) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             String line;
-            Mybook current = null;
+            Mycd current = null;
+            StringBuilder descriptionBuilder = null;
 
             while ((line = br.readLine()) != null) {
 
                 line = line.trim();
+                if (line.isEmpty()) continue;
 
-                if (line.isEmpty())
-                    continue;
-
-                // ENTRY END
+                // ===== END OF ENTRY =====
                 if (line.startsWith("--- END OF ENTRY ---")
                         || line.startsWith("-------------------------------------------------------------------")) {
 
                     if (current != null) {
-                        resources.put(current.oclcNumber, current);
+                        resources.put(current.oclcNumber,current);
                         current = null;
+                        descriptionBuilder = null;
                     }
                     continue;
                 }
 
                 if (current == null)
-                    current = new Mybook();
+                    current = new Mycd();
 
-                // ========= SIMPLE FIELDS =========
+                // ===== SIMPLE FIELDS =====
 
-                if (line.startsWith("OCLC Number:")) {
+                if (line.startsWith("OCLC Number:"))
                     current.oclcNumber = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("Title:")) {
+                else if (line.startsWith("Title:"))
                     current.title = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("Authors:")
-                        || line.startsWith("Author:")) {
-                    current.authors = Helper.readNextValue(br);
-                    continue;
-                }
+                else if (line.startsWith("Performers:"))
+                    current.performers = Helper.readNextValue(br);
 
-                if (line.startsWith("Year of publication:")) {
+                else if (line.startsWith("Credits:"))
+                    current.credits = Helper.readNextValue(br);
+
+                else if (line.startsWith("Year of release:"))
                     current.year = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("Publisher:")) {
+                else if (line.startsWith("Language:"))
+                    current.language = Helper.readNextValue(br);
+
+                else if (line.startsWith("Publisher:"))
                     current.publisher = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("Genre:")) {
+                else if (line.startsWith("Genre:"))
                     current.genre = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("Physical Description:")) {
+                else if (line.startsWith("Physical Description:"))
                     current.physicalDescription = Helper.readNextValue(br);
-                    continue;
-                }
 
-                if (line.startsWith("ISBN:")) {
+                else if (line.startsWith("ISBN:"))
                     current.isbn = Helper.readNextValue(br);
-                    continue;
-                }
 
-                // ========= SUMMARY (SPECIAL CASE) =========
+                // ===== MULTI-LINE DESCRIPTION =====
+                else if (line.startsWith("Description:")) {
 
-                if (line.startsWith("Summary:")) {
-
-                    StringBuilder summaryBuilder = new StringBuilder();
+                    descriptionBuilder = new StringBuilder();
 
                     while ((line = br.readLine()) != null) {
 
                         line = line.trim();
 
-                        if (line.startsWith("Year of publication:")
+                        if (line.startsWith("Year of release:")
+                                || line.startsWith("Language:")
                                 || line.startsWith("Publisher:")
                                 || line.startsWith("Genre:")
                                 || line.startsWith("Physical Description:")
@@ -103,20 +93,18 @@ public class BookManager {
                             break;
                         }
 
-                        if (!line.isEmpty())
-                            summaryBuilder.append(line).append("\n");
+                        descriptionBuilder.append(line).append("\n");
                     }
 
-                    current.summary = summaryBuilder.toString().trim();
+                    current.description = descriptionBuilder.toString().trim();
 
-                    // IMPORTANT:
-                    // We already read the next field line,
-                    // so process it in next loop iteration.
+                    // Handle the field that stopped the description
                     if (line != null) {
-                        // push it back logically by handling it again
-                        // easiest way: manually process it
-                        if (line.startsWith("Year of publication:"))
+
+                        if (line.startsWith("Year of release:"))
                             current.year = Helper.readNextValue(br);
+                        else if (line.startsWith("Language:"))
+                            current.language = Helper.readNextValue(br);
                         else if (line.startsWith("Publisher:"))
                             current.publisher = Helper.readNextValue(br);
                         else if (line.startsWith("Genre:"))
@@ -126,15 +114,16 @@ public class BookManager {
                         else if (line.startsWith("ISBN:"))
                             current.isbn = Helper.readNextValue(br);
                     }
-
-                    continue;
                 }
             }
 
-            if (current != null)
-                resources.put(current.oclcNumber, current);
+            // Add last CD if file doesn't end with separator
+            if (current != null) {
+                resources.put(current.oclcNumber,current);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }}
+    }
+}

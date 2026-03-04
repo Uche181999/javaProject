@@ -1,6 +1,10 @@
+package Util;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import Manager.Manager;
+
 
 public class Helper {
 
@@ -8,16 +12,16 @@ public class Helper {
 
 public static <T> String displayText(Manager<T> object) {
 
-    HashMap<String, T> map = object.getResources();
-    StringBuilder sb = new StringBuilder();
+        HashMap<String, T> map = object.getResources();
+        StringBuilder sb = new StringBuilder();
 
-    // iterate over the values of the map
-    for (T field : map.values()) {
-        sb.append(field.toString()).append("\n\n");
+        // iterate over the values of the map
+        for (T field : map.values()) {
+            sb.append(field.toString()).append("\n\n");
+        }
+
+        return sb.toString();
     }
-
-    return sb.toString();
-}
 
 
     public static String readNextValue(BufferedReader br) throws IOException {
@@ -33,4 +37,6 @@ public static <T> String displayText(Manager<T> object) {
 
         return "";
     }
+
+     
 }

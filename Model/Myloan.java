@@ -1,3 +1,4 @@
+package Model;
 public class Myloan {
 
     public String oclcNumber;
@@ -6,8 +7,8 @@ public class Myloan {
     @Override
     public String toString() {
         return 
-               "\nOCLC Number: " + oclcNumber +
-               "\nLOan" +loan +
+               "OCLC Number: " + oclcNumber +
+               "\n\nLoan: " + loan +
                "\n---------------------\n";
     }
 }

@@ -1,3 +1,4 @@
+package Manager;
 import java.util.HashMap;
 
 public class Manager<T> {
