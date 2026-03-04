@@ -355,8 +355,8 @@ public class MainClass {
             int totalDays = list.get(i).getValue();
 
             // Convert days → months (round up)
-            // int months = (int) Math.ceil(totalDays / 30.0);
-            int months =totalDays;
+            int months = (int) Math.ceil(totalDays / 30.0);
+;
             int timesLoaned = loanCountMap.get(id);
 
             T item = items.getResources().get(id);
@@ -382,6 +382,7 @@ public class MainClass {
             .append("\n\nTITLE: ").append(title)
             .append("\n\nNO. TIMES LOANED: ").append(timesLoaned)
             .append("\n\nTOTAL MONTHS LOANED: ").append(months)
+            .append("\n\nTOTAL DAYS LOANED: ").append(totalDays)
             .append("\n---------------------------------------\n");
         }
 
